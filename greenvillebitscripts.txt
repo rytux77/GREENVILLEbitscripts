@@ -1,6 +1,6 @@
 -- Load Venyx UI
 local VenyxLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
-local Venyx = VenyxLibrary.new("Bit Scripts ⚡ Greenville (cooking)", 5013109572)
+local Venyx = VenyxLibrary.new("Bit Scripts ⚡ Universal Speed", 5013109572)
 
 -- Black Theme
 local Theme = {
