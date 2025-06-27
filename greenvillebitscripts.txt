@@ -13,38 +13,7 @@ local speedPage = Venyx:addPage("Speed Boost", 5012544693)
 local brakePage = Venyx:addPage("Brake Multiplier", 5012544693)
 local miscPage = Venyx:addPage("Misc", 5012544693)
 
--- Theme system
-local themes = {
-    ["Black"] = {
-        Background = Color3.fromRGB(15, 15, 15),
-        Glow = Color3.fromRGB(0, 0, 0),
-        Accent = Color3.fromRGB(0, 0, 0),
-        LightContrast = Color3.fromRGB(25, 25, 25),
-        DarkContrast = Color3.fromRGB(10, 10, 10),
-        TextColor = Color3.fromRGB(255, 255, 255)
-    },
-    ["Red"] = {
-        Background = Color3.fromRGB(20, 0, 0),
-        Glow = Color3.fromRGB(100, 0, 0),
-        Accent = Color3.fromRGB(200, 0, 0),
-        LightContrast = Color3.fromRGB(40, 0, 0),
-        DarkContrast = Color3.fromRGB(10, 0, 0),
-        TextColor = Color3.fromRGB(255, 100, 100)
-    },
-    ["Blue"] = {
-        Background = Color3.fromRGB(0, 10, 20),
-        Glow = Color3.fromRGB(0, 0, 50),
-        Accent = Color3.fromRGB(0, 100, 200),
-        LightContrast = Color3.fromRGB(0, 20, 40),
-        DarkContrast = Color3.fromRGB(0, 5, 15),
-        TextColor = Color3.fromRGB(150, 200, 255)
-    }
-}
 
--- Apply default theme (Black)
-for k, v in pairs(themes["Black"]) do
-    pcall(Venyx.setTheme, Venyx, k, v)
-end
 
 -- Speed Boost
 local speedSection = speedPage:addSection("Acceleration Boost")
