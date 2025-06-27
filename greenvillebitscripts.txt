@@ -25,6 +25,8 @@ local LocalPlayer = Players.LocalPlayer
 local speedPage = Venyx:addPage("Speed Boost", 5012544693)
 local brakePage = Venyx:addPage("Brake Multiplier", 5012544693)
 local miscPage = Venyx:addPage("Misc", 5012544693)
+local CreditsPage = Venyx:addpage("Credits:,G012544693)
+
 
 -- Speed Boost
 local speedSection = speedPage:addSection("Acceleration Boost")
@@ -117,6 +119,8 @@ RunService.Stepped:Connect(function()
         end
     end
 end)
+local CreditsSection = CreditsPage:addSection("Creator")
+CreditsSection:addLabel("Made by Bit")
 
 -- UI Toggle with LeftControl
 UserInputService.InputBegan:Connect(function(input, gpe)
