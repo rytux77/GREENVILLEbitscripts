@@ -1,6 +1,8 @@
--- Load Venyx UI
-local VenyxLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GreenDeno/Venyx-UI-Library/main/source.lua"))()
-local Venyx = VenyxLibrary.new("Bit Scripts ⚡ Universal Speed", 5013109572)
+-- Load Venyx UI (source2.lua)
+local Venyx = loadstring(game:HttpGet("https://raw.githubusercontent.com/Stefanuk12/Venyx-UI-Library/main/source2.lua"))()
+local UI = Venyx.new({
+    title = "Bit Scripts ⚡ Universal Vehicle Speed"
+})
 
 -- Services
 local Players = game:GetService("Players")
@@ -8,74 +10,113 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local LocalPlayer = Players.LocalPlayer
 
--- Pages
-local speedPage = Venyx:addPage("Speed Boost", 5012544693)
-local brakePage = Venyx:addPage("Brake Multiplier", 5012544693)
-local miscPage = Venyx:addPage("Misc", 5012544693)
+-- Pages & Sections
+local speedPage = UI:addPage({ title = "Speed Boost", icon = 5012544693 })
+local brakePage = UI:addPage({ title = "Brake Multiplier", icon = 5012544693 })
+local miscPage = UI:addPage({ title = "Misc", icon = 5012544693 })
 
-
+local speedSection = speedPage:addSection({ title = "Acceleration Boost" })
+local brakeSection = brakePage:addSection({ title = "Braking Control" })
+local flySection = miscPage:addSection({ title = "Car Fly" })
+local uiSection = miscPage:addSection({ title = "UI Settings" })
 
 -- Speed Boost
-local speedSection = speedPage:addSection("Acceleration Boost")
 local velocityMult = 0.025
 local boostKey = Enum.KeyCode.W
 
-speedSection:addSlider("Boost Multiplier (x1000)", 25, 0, 50, function(v)
-    velocityMult = v / 1000
-end)
-
-speedSection:addKeybind("Boost Key", boostKey, function()
-    while UserInputService:IsKeyDown(boostKey) do
-        task.wait()
-        local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-        local seat = humanoid and humanoid.SeatPart
-        if seat and seat:IsA("VehicleSeat") then
-            seat.AssemblyLinearVelocity *= Vector3.new(1 + velocityMult, 1, 1 + velocityMult)
-        end
+speedSection:addSlider({
+    title = "Boost Multiplier (x1000)",
+    min = 0,
+    max = 50,
+    default = 25,
+    callback = function(v)
+        velocityMult = v / 1000
     end
-end, function(k) boostKey = k.KeyCode end)
+})
+
+speedSection:addKeybind({
+    title = "Boost Key",
+    key = boostKey,
+    callback = function()
+        while UserInputService:IsKeyDown(boostKey) do
+            task.wait()
+            local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            local seat = humanoid and humanoid.SeatPart
+            if seat and seat:IsA("VehicleSeat") then
+                seat.AssemblyLinearVelocity *= Vector3.new(1 + velocityMult, 1, 1 + velocityMult)
+            end
+        end
+    end,
+    changedCallback = function(k)
+        boostKey = k
+    end
+})
 
 -- Brake Multiplier
-local brakeSection = brakePage:addSection("Braking Control")
 local brakeMult = 0.15
 local brakeKey = Enum.KeyCode.S
 
-brakeSection:addSlider("Brake Force (x1000)", 150, 0, 300, function(v)
-    brakeMult = v / 1000
-end)
+brakeSection:addSlider({
+    title = "Brake Force (x1000)",
+    min = 0,
+    max = 300,
+    default = 150,
+    callback = function(v)
+        brakeMult = v / 1000
+    end
+})
 
-brakeSection:addKeybind("Brake Key", brakeKey, function()
-    while UserInputService:IsKeyDown(brakeKey) do
-        task.wait()
+brakeSection:addKeybind({
+    title = "Brake Key",
+    key = brakeKey,
+    callback = function()
+        while UserInputService:IsKeyDown(brakeKey) do
+            task.wait()
+            local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
+            local seat = humanoid and humanoid.SeatPart
+            if seat and seat:IsA("VehicleSeat") then
+                seat.AssemblyLinearVelocity *= Vector3.new(1 - brakeMult, 1, 1 - brakeMult)
+            end
+        end
+    end,
+    changedCallback = function(k)
+        brakeKey = k
+    end
+})
+
+brakeSection:addKeybind({
+    title = "Stop Vehicle (P)",
+    key = Enum.KeyCode.P,
+    callback = function()
         local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
         local seat = humanoid and humanoid.SeatPart
         if seat and seat:IsA("VehicleSeat") then
-            seat.AssemblyLinearVelocity *= Vector3.new(1 - brakeMult, 1, 1 - brakeMult)
+            seat.AssemblyLinearVelocity = Vector3.zero
+            seat.AssemblyAngularVelocity = Vector3.zero
         end
     end
-end, function(k) brakeKey = k.KeyCode end)
-
-brakeSection:addKeybind("Stop Vehicle (P)", Enum.KeyCode.P, function()
-    local humanoid = LocalPlayer.Character and LocalPlayer.Character:FindFirstChildOfClass("Humanoid")
-    local seat = humanoid and humanoid.SeatPart
-    if seat and seat:IsA("VehicleSeat") then
-        seat.AssemblyLinearVelocity = Vector3.zero
-        seat.AssemblyAngularVelocity = Vector3.zero
-    end
-end)
+})
 
 -- Car Fly
-local flySection = miscPage:addSection("Car Fly")
 local carFlyEnabled = false
 local carFlySpeed = 1
 
-flySection:addToggle("Enable Car Fly", false, function(v)
-    carFlyEnabled = v
-end)
+flySection:addToggle({
+    title = "Enable Car Fly",
+    callback = function(v)
+        carFlyEnabled = v
+    end
+})
 
-flySection:addSlider("Fly Speed", 100, 0, 800, function(v)
-    carFlySpeed = v / 100
-end)
+flySection:addSlider({
+    title = "Fly Speed",
+    min = 0,
+    max = 800,
+    default = 100,
+    callback = function(v)
+        carFlySpeed = v / 100
+    end
+})
 
 RunService.Stepped:Connect(function()
     if not carFlyEnabled then return end
@@ -100,29 +141,39 @@ RunService.Stepped:Connect(function()
             if UserInputService:IsKeyDown(Enum.KeyCode.Space) then moveVec += Vector3.new(0, 1, 0) end
             if UserInputService:IsKeyDown(Enum.KeyCode.LeftControl) then moveVec -= Vector3.new(0, 1, 0) end
 
-            local direction = moveVec.Magnitude > 0 and moveVec.Unit or Vector3.zero
-            seat.AssemblyLinearVelocity = direction * (carFlySpeed * 100)
+            local dir = moveVec.Magnitude > 0 and moveVec.Unit or Vector3.zero
+            seat.AssemblyLinearVelocity = dir * (carFlySpeed * 100)
             seat.AssemblyAngularVelocity = Vector3.zero
         end
     end
 end)
 
--- Theme Selector
-local themeNames = {}
-for name, _ in pairs(themes) do
-    table.insert(themeNames, name)
-end
-
-miscPage:addDropdown("Select Theme", themeNames, function(selected)
-    local selectedTheme = themes[selected]
-    for key, value in pairs(selectedTheme) do
-        pcall(Venyx.setTheme, Venyx, key, value)
+-- UI Toggle Keybind (Left Control)
+uiSection:addKeybind({
+    title = "Toggle UI",
+    key = Enum.KeyCode.LeftControl,
+    callback = function()
+        UI:toggle()
     end
-end)
+})
 
--- UI Toggle with LeftControl
-UserInputService.InputBegan:Connect(function(input, gpe)
-    if not gpe and input.KeyCode == Enum.KeyCode.LeftControl then
-        Venyx:toggle()
+-- UI Accent Color Picker
+uiSection:addColorPicker({
+    title = "UI Accent Color",
+    default = Color3.fromRGB(255, 0, 0),
+    callback = function(color)
+        UI:setTheme({
+            theme = "Accent",
+            color3 = color
+        })
     end
-end)
+})
+
+-- Load UI (optional)
+UI:SelectPage({ page = UI.pages[1], toggle = true })
+
+-- Optional notification
+UI:Notify({
+    title = "Bit Vehicle Hub",
+    text = "Press LeftControl to toggle UI"
+})
